@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hillary K Harry | Portfolio</title>
+  <meta name="description" content="Portfolio of Hillary K Harry — IT student at Gauteng City College. Assignments, about and contact.">
+  <style>
+    /* ============================================================
+       1. Design tokens
+       Liquid Glass variables live here so light/dark theming is a
+       one-line swap of the custom property values, not a rewrite.
+       ============================================================ */
+    :root {
+      /* glass surfaces */
+      --glass-bg: rgba(10, 12, 26, 0.55);
+      --glass-bg-strong: rgba(10, 12, 26, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glass-highlight: rgba(255, 255, 255, 0.08); /* inner top edge */
+
+      /* page background + text */
+      /* layered night-sky background: deep gradient + two soft glows */
+      --bg-glow-1: rgba(76, 81, 191, 0.35);
+      --bg-glow-2: rgba(14, 124, 156, 0.28);
+      --bg-start: #0b0d1e;
+      --bg-end: #191a33;
+      --text-primary: #f2f4f8;
+      --text-secondary: rgba(242, 244, 248, 0.72);
+
+      /* accent + feedback */
+      --accent: #6ee7f9;
+      --accent-soft: rgba(110, 231, 249, 0.16);
+      --error: #ff7a90;
+      --success: #5ee2a0;
+
+      /* shape & depth */
+      --radius-card: 22px;
+      --radius-pill: 12px;
+      --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --blur-strength: saturate(160%) blur(22px);
+
+      /* motion */
+      --transition-fast: 200ms ease-out;
+      --transition-page: 320ms cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    /* Light mode: same recipe, lighter values.
+       Contrast checked against the light gradient below. */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --glass-bg: rgba(255, 255, 255, 0.55);
+        --glass-bg-strong: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(0, 0, 0, 0.10);
+        --glass-highlight: rgba(255, 255, 255, 0.65);
+        --bg-glow-1: rgba(120, 150, 230, 0.35);
+        --bg-glow-2: rgba(110, 200, 220, 0.30);
+        --bg-start: #e8edf7;
+        --bg-end: #ccd8ee;
+        --text-primary: #141a2b;
+        --text-secondary: rgba(20, 26, 43, 0.68);
+        --accent: #0e7c9c;
+        --accent-soft: rgba(14, 124, 156, 0.12);
+        --shadow-soft: 0 18px 50px rgba(30, 45, 80, 0.18);
+      }
+    }
+
+    /* ============================================================
+       2. Reset & base
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                   "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-primary);
+      background:
+        radial-gradient(60rem 40rem at 15% -10%, var(--bg-glow-1), transparent 60%),
+        radial-gradient(50rem 35rem at 90% 110%, var(--bg-glow-2), transparent 60%),
+        linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      background-attachment: fixed;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    h1 { font-size: clamp(1.9rem, 4vw, 2.8rem); letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+    h2 { font-size: 1.35rem; margin-bottom: 0.9rem; letter-spacing: -0.01em; }
+    h3 { font-size: 1.05rem; }
+    p { color: var(--text-secondary); margin-bottom: 0.9rem; }
+
+    /* ============================================================
+       3. Layout shell
+       ============================================================ */
+    .page-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 7.5rem 1.25rem 3rem;
+    }
+
+    main { min-height: 60vh; }
+
+    .page-intro { max-width: 560px; }
+
+    /* ============================================================
+       4. Navigation — floating glass pill
+       ============================================================ */
+    .nav-pill {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      width: min(92%, 900px);
+      padding: 0.55rem 0.9rem;
+      border-radius: 18px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      /* -webkit prefix needed for Safari < 18 / older iOS */
+      -webkit-backdrop-filter: var(--blur-strength);
+      backdrop-filter: var(--blur-strength);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 var(--glass-highlight);
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+    .nav-logo:hover { text-decoration: none; }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+      margin-left: auto;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--radius-pill);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background var(--transition-fast), color var(--transition-fast),
+                  transform var(--transition-fast);
+    }
+    .nav-links a:hover {
+      color: var(--text-primary);
+      text-decoration: none;
+      transform: scale(1.03);
+    }
+    .nav-links a.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* Hamburger — only visible on small screens */
+    .menu-btn {
+      display: none;
+      margin-left: auto;
+      padding: 0.45rem 0.8rem;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-pill);
+      background: var(--accent-soft);
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform var(--transition-fast);
+    }
+    .menu-btn:hover { transform: scale(1.05); }
+
+    /* ============================================================
+       5. Glass cards & buttons
+       ============================================================ */
+    .glass-card {
+      padding: 1.6rem;
+      border-radius: var(--radius-card);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      -webkit-backdrop-filter: var(--blur-strength);
+      backdrop-filter: var(--blur-strength);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 var(--glass-highlight);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .glass-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.42), inset 0 1px 0 var(--glass-highlight);
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--glass-border);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform var(--transition-fast), background var(--transition-fast);
+    }
+    .btn:hover {
+      text-decoration: none;
+      transform: scale(1.03);
+      background: var(--accent);
+      color: #08111a;
+    }
+
+    /* ============================================================
+       6. Section switching
+       Each section is always in the DOM; the router toggles
+       .is-active. We animate opacity + translate only, so the
+       layout never jumps mid-transition.
+       ============================================================ */
+    .section-fade {
+      display: none;
+    }
+    .section-fade.is-active {
+      display: block;
+      animation: sectionIn var(--transition-page);
+    }
+
+    @keyframes sectionIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       7. Home
+       ============================================================ */
+    .hero { padding: 2.5rem 0 2rem; }
+    .hero .badge {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .skills-grid .glass-card h3 { color: var(--text-primary); margin-bottom: 0.35rem; }
+    .skills-grid .glass-card p { margin-bottom: 0; font-size: 0.92rem; }
+
+    .section-title { margin-top: 3rem; }
+
+    /* ============================================================
+       8. Assignments
+       ============================================================ */
+    .assignments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .assignment-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .assignment-no {
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .assignment-sub {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.6rem;
+    }
+    .glass-card p.desc { font-size: 0.92rem; }
+
+    .assignment-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.9rem 0 1rem;
+    }
+    .assignment-tags span {
+      padding: 0.22rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .assignment-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       9. About
+       ============================================================ */
+    .about-stack { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
+
+    .tech-list {
+      list-style: none;
+      display: grid;
+      gap: 0.7rem;
+    }
+    .tech-list li {
+      padding: 0.85rem 1.1rem;
+      border-radius: 14px;
+      background: var(--glass-bg-strong);
+      border: 1px solid var(--glass-border);
+      font-size: 0.93rem;
+      color: var(--text-secondary);
+    }
+    .tech-list strong { color: var(--text-primary); }
+
+    /* ============================================================
+       10. Contact form
+       ============================================================ */
+    .contact-form {
+      display: grid;
+      gap: 1.2rem;
+      max-width: 560px;
+      margin-top: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg-strong);
+      color: var(--text-primary);
+      font: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .error { display: block; min-height: 1.1rem; font-size: 0.8rem; color: var(--error); margin-top: 0.3rem; }
+    .success { font-size: 0.9rem; color: var(--success); margin: 0; }
+
+    /* ============================================================
+       11. Footer
+       ============================================================ */
+    footer {
+      margin-top: 4rem;
+      padding: 1.5rem 0 2rem;
+      border-top: 1px solid var(--glass-border);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       12. Mobile — nav collapses into a dropdown panel
+       ============================================================ */
+    @media (max-width: 768px) {
+      .nav-pill { flex-wrap: wrap; gap: 0.5rem; }
+      .menu-btn { display: block; }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-left: 0;
+        padding-top: 0.5rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { text-align: center; padding: 0.7rem 1rem; }
+    }
+
+    /* ============================================================
+       13. Reduced motion — honor the OS setting
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .glass-card:hover, .btn:hover, .nav-links a:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating glass navigation -->
+  <nav class="nav-pill" aria-label="Main navigation">
+    <a href="#home" class="nav-logo">Hillary K Harry</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" data-route="home" class="active">Home</a></li>
+      <li><a href="#assignments" data-route="assignments">Assignments</a></li>
+      <li><a href="#about" data-route="about">About</a></li>
+      <li><a href="#contact" data-route="contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <main>
+
+      <!-- ============ HOME ============ -->
+      <section id="home" class="section-fade is-active" aria-labelledby="home-title">
+        <div class="hero">
+          <span class="badge">Web Development Portfolio</span>
+          <h1 id="home-title">Welcome to My Portfolio</h1>
+          <p>
+            Hi, I'm a second-year IT student at Gauteng City College.
+            This website was created as part of my Web Development assignment.
+          </p>
+          <p>
+            Here you can find information about me, the assignments I have completed,
+            and how to get in touch.
+          </p>
+          <a href="#assignments" class="btn">View My Assignments</a>
+        </div>
+
+        <h2 class="section-title">Skills I Have Learned</h2>
+        <div class="skills-grid">
+          <article class="glass-card">
+            <h3>HTML5</h3>
+            <p>Building structured web pages using semantic elements.</p>
+          </article>
+          <article class="glass-card">
+            <h3>CSS3</h3>
+            <p>Styling web pages with colours, layouts, and responsive design.</p>
+          </article>
+          <article class="glass-card">
+            <h3>JavaScript</h3>
+            <p>Adding interactivity like form validation and menu toggles.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ ASSIGNMENTS ============ -->
+      <section id="assignments" class="section-fade" aria-labelledby="assignments-title">
+        <h1 id="assignments-title">My Assignments</h1>
+        <p class="page-intro">Below are some of the assignments and projects I have worked on during my studies.</p>
+
+        <div class="assignments-grid">
+          <article class="glass-card">
+            <div class="assignment-top">
+              <span class="assignment-no">Assignment 01</span>
+              <span>April 2026</span>
+            </div>
+            <h3>Banking System</h3>
+            <div class="assignment-sub">Java OOP Project - HILLARY K HARRY</div>
+            <p class="desc">Console-based banking system with account creation, deposit, withdraw, balance check and transaction history. Focused on validation to prevent negative balance and file I/O for data persistence.</p>
+            <div class="assignment-tags">
+              <span>Java</span><span>OOP</span><span>File I/O</span>
+            </div>
+            <div class="assignment-links">
+              <a href="assets/banking-system.pdf" target="_blank" rel="noopener">View PDF &rarr;</a>
+              <a href="https://github.com/" target="_blank" rel="noopener">GitHub &rarr;</a>
+            </div>
+          </article>
+
+          <article class="glass-card">
+            <div class="assignment-top">
+              <span class="assignment-no">Assignment 02</span>
+              <span>July 2026</span>
+            </div>
+            <h3>Registration Form</h3>
+            <div class="assignment-sub">Web Development - Form Validation</div>
+            <p class="desc">Responsive registration form with real validation, not just required fields. Checks email format, password strength, matching passwords and shows inline error messages.</p>
+            <div class="assignment-tags">
+              <span>HTML</span><span>CSS</span><span>JavaScript</span>
+            </div>
+            <div class="assignment-links">
+              <a href="assets/registration.pdf" target="_blank" rel="noopener">View PDF &rarr;</a>
+              <a href="https://github.com/" target="_blank" rel="noopener">GitHub &rarr;</a>
+            </div>
+          </article>
+
+          <article class="glass-card">
+            <div class="assignment-top">
+              <span class="assignment-no">Assignment 03</span>
+              <span>February 2026</span>
+            </div>
+            <h3>Library Management System</h3>
+            <div class="assignment-sub">Database Systems - DBS101</div>
+            <p class="desc">System to manage books, students, and issue/return flow. Features admin login, book search, overdue tracking, and SQL joins for reports. Built with JDBC and MySQL.</p>
+            <div class="assignment-tags">
+              <span>Java</span><span>MySQL</span><span>JDBC</span>
+            </div>
+            <div class="assignment-links">
+              <a href="assets/library.pdf" target="_blank" rel="noopener">View PDF &rarr;</a>
+              <a href="https://github.com/" target="_blank" rel="noopener">GitHub &rarr;</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ ABOUT ============ -->
+      <section id="about" class="section-fade" aria-labelledby="about-title">
+        <h1 id="about-title">About</h1>
+
+        <div class="about-stack">
+          <article class="glass-card">
+            <h2>About This Website</h2>
+            <p>
+              This portfolio website was built for my Web Development module at
+              Gauteng City College. The purpose is to show that I understand the
+              basics of HTML, CSS, and JavaScript.
+            </p>
+            <p>
+              I created this site from scratch without using any frameworks like
+              Bootstrap or React. Everything you see is written in plain HTML, CSS,
+              and JavaScript.
+            </p>
+          </article>
+
+          <article class="glass-card">
+            <h2>About Me</h2>
+            <p>
+              I am currently studying Information Technology: System Development.
+              I enjoy learning how websites work and building things with code.
+            </p>
+            <p>
+              This assignment has taught me how to structure a website, make it
+              look good with CSS, and add interactivity with JavaScript.
+            </p>
+          </article>
+
+          <article class="glass-card">
+            <h2>Technologies Used</h2>
+            <ul class="tech-list">
+              <li><strong>HTML5</strong> — for the structure and content of the pages</li>
+              <li><strong>CSS3</strong> — for styling, colours, and responsive layout</li>
+              <li><strong>JavaScript</strong> — for form validation and the mobile menu</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ CONTACT ============ -->
+      <section id="contact" class="section-fade" aria-labelledby="contact-title">
+        <h1 id="contact-title">Contact Me</h1>
+        <p class="page-intro">Fill in the form below and I will get back to you.</p>
+
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-group">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Your full name" autocomplete="name">
+            <span class="error" id="nameError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="yourname@email.com" autocomplete="email">
+            <span class="error" id="emailError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="msg">Message *</label>
+            <textarea id="msg" name="msg" placeholder="Write your message here..."></textarea>
+            <span class="error" id="msgError"></span>
+          </div>
+
+          <button type="submit" class="btn">Send Message</button>
+          <p id="successMsg" class="success" role="status"></p>
+        </form>
+      </section>
+
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Hillary K Harry. Web Development Assignment.</p>
+    </footer>
+  </div>
+
+  <script>
+    /* ============================================================
+       Tiny hash router.
+       Hash routing (not pushState) so the page works from file://
+       and from GitHub Pages with zero server config — the hash is
+       never sent to a server, so no rewrite rules are needed.
+       ============================================================ */
+
+    var ROUTES = ["home", "assignments", "about", "contact"];
+    var navLinks = document.getElementById("navLinks");
+    var menuBtn = document.getElementById("menuBtn");
+
+    function currentRoute() {
+      var hash = window.location.hash.replace("#", "");
+      // Unknown or empty hash falls back to home
+      return ROUTES.indexOf(hash) !== -1 ? hash : "home";
+    }
+
+    function showSection(route) {
+      ROUTES.forEach(function (name) {
+        document.getElementById(name).classList.toggle("is-active", name === route);
+      });
+
+      // Keep the nav highlight in sync with the visible section
+      var links = navLinks.querySelectorAll("a[data-route]");
+      links.forEach(function (link) {
+        link.classList.toggle("active", link.getAttribute("data-route") === route);
+      });
+
+      // Reset scroll so a long assignments page doesn't leave you
+      // half-way down the next section
+      window.scrollTo(0, 0);
+      closeMenu();
+    }
+
+    function handleRouteChange() {
+      showSection(currentRoute());
+    }
+
+    /* ---------- Mobile menu ---------- */
+
+    function toggleMenu() {
+      var isOpen = navLinks.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", String(isOpen));
+    }
+
+    function closeMenu() {
+      navLinks.classList.remove("open");
+      menuBtn.setAttribute("aria-expanded", "false");
+    }
+
+    /* ---------- Contact form validation ---------- */
+
+    function setError(spanId, message) {
+      document.getElementById(spanId).textContent = message;
+    }
+
+    function validateContactForm(event) {
+      event.preventDefault();
+      var isValid = true;
+
+      var name = document.getElementById("fullName").value.trim();
+      var email = document.getElementById("email").value.trim();
+      var msg = document.getElementById("msg").value.trim();
+      var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      setError("nameError", "");
+      setError("emailError", "");
+      setError("msgError", "");
+      document.getElementById("successMsg").textContent = "";
+
+      if (name.length < 2) {
+        setError("nameError", "Please enter your full name.");
+        isValid = false;
+      }
+      if (!emailPattern.test(email)) {
+        setError("emailError", "Please enter a valid email address.");
+        isValid = false;
+      }
+      if (msg.length < 10) {
+        setError("msgError", "Message must be at least 10 characters.");
+        isValid = false;
+      }
+
+      if (isValid) {
+        document.getElementById("successMsg").textContent =
+          "Thanks " + name + "! Your message has been noted.";
+        event.target.reset();
+      }
+    }
+
+    /* ---------- Event listeners ---------- */
+
+    window.addEventListener("hashchange", handleRouteChange);
+    menuBtn.addEventListener("click", toggleMenu);
+    document.getElementById("contactForm").addEventListener("submit", validateContactForm);
+
+    // Support opening the page with a hash already set (e.g. a shared
+    // #contact link) and plain index.html with no hash at all
+    handleRouteChange();
+  </script>
+</body>
+</html>
